@@ -1,0 +1,365 @@
+#UI#########################################################
+
+library(shiny)
+
+library(shinydashboard)
+
+library(shinyMatrix)
+
+library(PROMETHEE)
+
+alternatives <-c( "Revit & Oculus Rift","Revit & Gear VR", "Revit & HTC Vive",	"Navisworks & Oculus",	"Navisworks & Gear VR",	"Navisworks & HTC Vive",
+                   "Preference Threshold", "Indifference Threshold", "Weights")
+
+alternatives_2 <- c("Scale", "Unit" , "Preference function",  "Min or max")
+
+alternatives_3 <-c( "Revit & Oculus Rift","Revit & Gear VR", "Revit & HTC Vive",	"Navisworks & Oculus",	"Navisworks & Gear VR",	"Navisworks & HTC Vive")
+
+criteria <- c(
+        "VR, BIM user friendlyness",	"VR, BIM ease of use", 	"VR technical support",	"VR tool Price", "VR RAM requirement",
+        "VR 360 degree range",	"VR field of view", "VR tool Set up", "VR power usage", "BIM 4D capability", "BIM subscription",
+        "BIM RAM requirement", 	"BIM space requirements" 
+)
+
+
+matrix_base_1 <-
+        matrix(
+                c(
+                        9,        	5,       	9,       	399,     	8,       	1,      	110,     	7,       	4.5,     	1,       	450,     	8,       	30,
+                        9,        	2,       	9,       	99,      	4,       	0,       	96,      	9,       	2,       	1,       	450,     	8,       	30,
+                        9,        	2,       	9,       	599,     	4,       	1,       	110,     	7,       	3.5,     	1,       	450,     	8,       	30,
+                        6,        	5,       	4,       	399,    	8,       	1,       	110,    	7,       	4.5,     	0,       	170,     	2,       	15,
+                        5,        	2,       	5,       	99,      	4,       	0,       	96,      	9,       	2,       	0,       	170,     	2,       	15,
+                        7,        	2,       	5,       	599,     	4,       	1,       	110,     	7,       	3.5,     	0,       	170,     	2,       	15,
+                        2,               1,   	        3,       	50,      	4,       	1,       	20,      	3,       	1.2,     	1,       	50,      	4,       	5,
+                        1,        	0,	        1,       	10,      	0,       	0,       	5,       	1,       	0.2,     	0,       	5,       	0,       	1,
+                        6,         	5,	        6,	        3,             4,       	2,       	2,       	2,       	2,       	5,       	3,      	4,       	4
+                ) 
+                , nrow = 9, ncol = 13, byrow = TRUE, dimnames = list(alternatives, criteria)
+        )
+
+matrix_base_1
+
+matrix_base_2 <-
+        matrix(
+                c(
+                        "qualitative",	"qualitative",	"qualitative",	"Quantitative",	"Quantitative",	"Yes/no",	"Quantitative",	"qualitative",	"Quantitative",	"Yes/no",	"Quantitative",	"Quantitative",	"Quantitative",
+                        "9 Likert",	"5 Likert", 	"9 Likert",	"dollars",	"GBs",    	"Yes/no",	"degree",	"9 Likert",	"Watts", 	"Yes/no",	"dollars",	"GBs",   	"GBs",
+                        "Level",	        "Level",	"Level", 	"Linear",	"Linear",	"Level", 	"Linear",	"Level", 	"Linear",	"Level", 	"Linear",	"Linear",	"Linear",
+                        "max",	        "max",   	"max",   	"min",   	"min",   	"max",   	"max",   	"max",   	"min",   	"max",   	"min",   	"min",   	"min"
+                        
+                ) 
+                , nrow = 4, ncol = 13, byrow = TRUE, dimnames = list(alternatives_2, criteria)
+        )
+
+matrix_base_2
+
+
+?PROMETHEE
+
+#dashborad####
+
+dashheader <- dashboardHeader(title = "Software Selection App")
+
+dashsidebar <- dashboardSidebar(
+        sidebarMenu(
+                menuItem(text = "Home", tabName = "tab_1"),
+                menuItem(text = "Graphs", tabName = "tab_2")
+        )
+)
+
+dashbody <- dashboardBody(
+        tabItems(
+                tabItem(tabName = "tab_1",
+                        h1("landing page"),
+                        p("explanation will appear here" ),
+                        
+                        #box 1
+                        box(
+                                width = 6, status = "primary", solidHeader = TRUE,
+                                matrixInput(inputId = "matrix_1",label = "Evaluation table 1", class = "numeric", value = matrix(matrix_base_1 , nrow =9 ,ncol =13 , dimnames = list(alternatives, criteria))),
+                                matrixInput(inputId = "matrix_2",label = "Evaluation table 2", value = matrix(matrix_base_2 , nrow =4 ,ncol =13 , dimnames = list(alternatives_2, criteria)))
+                        ),
+                        #box 2
+                        #box(
+                        #        width = 6, status = "primary", solidHeader = TRUE, title = "dati",
+                        #        verbatimTextOutput("table_1")
+                        #),
+                        #box 3
+                        #box(
+                        #        width = 6, status = "primary", solidHeader = TRUE, title = "PreT",
+                        #        verbatimTextOutput("table_2")
+                        #),
+                        #box 4
+                        #box(
+                        #        width = 6, status = "primary", solidHeader = TRUE, title = "IndT",
+                        #        verbatimTextOutput("table_3")
+                        #),
+                        #box 5
+                        #box(
+                        #        width = 6, status = "primary", solidHeader = TRUE, title = "Weig",
+                        #        verbatimTextOutput("table_4")
+                        #),
+                        #box 6
+                        #box(
+                        #        width = 6, status = "primary", solidHeader = TRUE, title = "PreF",
+                        #        verbatimTextOutput("table_5")
+                        #),
+                        #box 7
+                        #box(
+                        #        width = 6, status = "primary", solidHeader = TRUE, title = "MiMA",
+                        #        verbatimTextOutput("table_6")
+                        #),
+                        #box 8
+                        #box(
+                        #        width = 6, status = "primary", solidHeader = TRUE, title = "gauss",
+                        #        verbatimTextOutput("table_7")
+                        #),
+                        #box 9
+                        #box(
+                        #        width = 6, status = "primary", solidHeader = TRUE, title = "PF",
+                        #        verbatimTextOutput("table_8")
+                        #)
+                ),
+                
+           
+                tabItem(tabName = "tab_2",
+                        fluidRow(
+                                #box 1 ####
+                                box(
+                                        width = 6, status = "primary", solidHeader = TRUE, title = "PROMETHEE 1",
+                                        verbatimTextOutput("araz")
+                                        
+                                ),
+                                #box 2 ####
+                                box(
+                                        width = 6, status = "primary", solidHeader = TRUE, title = "PROMETHEE 2",
+                                        
+                                        plotOutput("PRMETHEE_2_bar_plot")
+                                )
+                        )
+                        
+                        )
+        )
+)
+
+dashboardPage(
+        header = dashheader,
+        sidebar = dashsidebar,
+        body = dashbody,
+        title = "software selection",
+        skin = "green"
+)
+
+#server#####################################################################################################################
+library(shiny)
+
+library(PROMETHEE)
+
+library(ggplot2)
+
+?PROMETHEE
+
+gauss <- data.frame(
+        matrix(0, ncol = 13,nrow = 6)
+)
+
+shinyServer(function(session, input, output){
+        
+        ##dati####
+
+        
+        
+        dati <- 
+                reactive(
+                        data.frame(
+                                VR_BIM_user_friendlyness=  input$matrix_1[1:6,1],	
+                                VR_BIM_ease_of_use	= input$matrix_1[1:6,2],
+                                VR_technical_support	= input$matrix_1[1:6,3],
+                                VR_tool_Price           = input$matrix_1[1:6,4],
+                                VR_RAM_requirement      = input$matrix_1[1:6,5], 
+                                VR_360_degree_range     = input$matrix_1[1:6,6],
+                                VR_field_of_view        = input$matrix_1[1:6,7],
+                                VR_tool_Set_up          = input$matrix_1[1:6,8],
+                                VR_power_usageb         = input$matrix_1[1:6,9],
+                                BIM_4D_capability       = input$matrix_1[1:6,10],
+                                BIM_subscription        = input$matrix_1[1:6,11],
+                                BIM_RAM_requirement     = input$matrix_1[1:6,12],
+                                BIM_space_requirements  = input$matrix_1[1:6,13]
+                        )
+                )
+        
+        PreT <- 
+                reactive(
+                        data.frame(
+                                VR_BIM_user_friendlyness= c( rep(input$matrix_1[7,1],6)),	
+                                VR_BIM_ease_of_use	= c(rep(input$matrix_1[7,2],6)),
+                                VR_technical_support	= c(rep(input$matrix_1[7,3],6)),
+                                VR_tool_Price           = c(rep(input$matrix_1[7,4],6)),
+                                VR_RAM_requirement      = c(rep(input$matrix_1[7,5],6)), 
+                                VR_360_degree_range     = c(rep(input$matrix_1[7,6],6)),
+                                VR_field_of_view        = c(rep(input$matrix_1[7,7],6)),
+                                VR_tool_Set_up          = c(rep(input$matrix_1[7,8],6)),
+                                VR_power_usageb         = c(rep(input$matrix_1[7,9],6)),
+                                BIM_4D_capability       = c(rep(input$matrix_1[7,10],6)),
+                                BIM_subscription        = c(rep(input$matrix_1[7,11],6)),
+                                BIM_RAM_requirement     = c(rep(input$matrix_1[7,12],6)),
+                                BIM_space_requirements  = c(rep(input$matrix_1[7,13],6))
+                        )
+                )
+        
+        rep(5, 6)
+        
+        IndT <- 
+                reactive(
+                        data.frame(
+                                VR_BIM_user_friendlyness= rep( input$matrix_1[8,1], 6),	
+                                VR_BIM_ease_of_use	= rep( input$matrix_1[8,2], 6),
+                                VR_technical_support	= rep( input$matrix_1[8,3], 6),
+                                VR_tool_Price           = rep( input$matrix_1[8,4], 6),
+                                VR_RAM_requirement      = rep( input$matrix_1[8,5], 6), 
+                                VR_360_degree_range     = rep( input$matrix_1[8,6], 6),
+                                VR_field_of_view        = rep( input$matrix_1[8,7], 6),
+                                VR_tool_Set_up          = rep( input$matrix_1[8,8], 6),
+                                VR_power_usageb         = rep( input$matrix_1[8,9], 6),
+                                BIM_4D_capability       = rep( input$matrix_1[8,10], 6),
+                                BIM_subscription        = rep( input$matrix_1[8,11], 6),
+                                BIM_RAM_requirement     = rep( input$matrix_1[8,12], 6),
+                                BIM_space_requirements  = rep( input$matrix_1[8,13], 6)
+                        )
+                )
+        
+        Weig <- 
+                reactive(
+                        data.frame(
+                                VR_BIM_user_friendlyness= rep( input$matrix_1[9,1], 6),	
+                                VR_BIM_ease_of_use	= rep( input$matrix_1[9,2], 6),	
+                                VR_technical_support	= rep( input$matrix_1[9,3], 6),	
+                                VR_tool_Price           = rep( input$matrix_1[9,4], 6),	
+                                VR_RAM_requirement      = rep( input$matrix_1[9,5], 6),	 
+                                VR_360_degree_range     = rep( input$matrix_1[9,6], 6),	
+                                VR_field_of_view        = rep( input$matrix_1[9,7], 6),	
+                                VR_tool_Set_up          = rep( input$matrix_1[9,8], 6),	
+                                VR_power_usageb         = rep( input$matrix_1[9,9], 6),	
+                                BIM_4D_capability       = rep( input$matrix_1[9,10], 6),	
+                                BIM_subscription        = rep( input$matrix_1[9,11], 6),	
+                                BIM_RAM_requirement     = rep( input$matrix_1[9,12], 6),	
+                                BIM_space_requirements  = rep( input$matrix_1[9,13], 6)
+                        )
+                )
+
+        
+        PreF <- 
+                reactive(
+                        data.frame(
+                                VR_BIM_user_friendlyness= rep( input$matrix_2[3,1], 6),	
+                                VR_BIM_ease_of_use	= rep( input$matrix_2[3,2], 6),	
+                                VR_technical_support	= rep( input$matrix_2[3,3], 6),	
+                                VR_tool_Price           = rep( input$matrix_2[3,4], 6),	
+                                VR_RAM_requirement      = rep( input$matrix_2[3,5], 6),	 
+                                VR_360_degree_range     = rep( input$matrix_2[3,6], 6),	
+                                VR_field_of_view        = rep( input$matrix_2[3,7], 6),	
+                                VR_tool_Set_up          = rep( input$matrix_2[3,8], 6),	
+                                VR_power_usageb         = rep( input$matrix_2[3,9], 6),	
+                                BIM_4D_capability       = rep( input$matrix_2[3,10], 6),	
+                                BIM_subscription        = rep( input$matrix_2[3,11], 6),	
+                                BIM_RAM_requirement     = rep( input$matrix_2[3,12], 6),	
+                                BIM_space_requirements  = rep( input$matrix_2[3,13], 6)
+                        )
+                )
+        
+        MiMa <- 
+                reactive(
+                        data.frame(
+                                VR_BIM_user_friendlyness= rep( input$matrix_2[4,1], 6),	
+                                VR_BIM_ease_of_use	= rep( input$matrix_2[4,2], 6),	
+                                VR_technical_support	= rep( input$matrix_2[4,3], 6),	
+                                VR_tool_Price           = rep( input$matrix_2[4,4], 6),	
+                                VR_RAM_requirement      = rep( input$matrix_2[4,5], 6),	 
+                                VR_360_degree_range     = rep( input$matrix_2[4,6], 6),	
+                                VR_field_of_view        = rep( input$matrix_2[4,7], 6),	
+                                VR_tool_Set_up          = rep( input$matrix_2[4,8], 6),	
+                                VR_power_usageb         = rep( input$matrix_2[4,9], 6),	
+                                BIM_4D_capability       = rep( input$matrix_2[4,10], 6),	
+                                BIM_subscription        = rep( input$matrix_2[4,11], 6),	
+                                BIM_RAM_requirement     = rep( input$matrix_2[4,12], 6),	
+                                BIM_space_requirements  = rep( input$matrix_2[4,13], 6)
+                        )
+                )
+        
+
+        data <- reactive(
+                data.frame(
+                        VR_BIM_user_friendlyness = c(6, -12, PF()$UnicriterionNetFlows[,1]),
+                        VR_BIM_ease_of_use = c(3, -3, PF()$UnicriterionNetFlows[,2])		
+                       
+                )
+                )
+        
+PF <- reactive(
+        PROMETHEE(dati(), PreF(),PreT(),IndT(),Weig(),MiMa(),gauss)
+)
+
+
+
+        #PROMETHEE 1####
+        PROMETHEE_1_data<-
+        reactive(
+                data.frame(
+                        alternative = alternatives_3,
+                        phi_negative= PF()$PROMETHEE1[,1],
+                        phi_positive= PF()$PROMETHEE1[,2]
+                )
+        )
+        
+        #PROMETHEE 2####
+PROMETHEE_2_data <-
+        reactive(
+                data.frame(
+                        alternative = alternatives_3,
+                        netflow = PF()$PROMETHEE2
+                )
+        )
+        
+        
+        #render prints####
+        output$table_1 <- renderPrint( 
+            dati()
+        )
+        
+        output$table_2 <- renderPrint( 
+                PreT()
+        )
+        
+        
+        output$table_3 <- renderPrint( 
+                IndT()
+        )
+        
+        output$table_4 <- renderPrint( 
+                Weig()
+        )
+        
+        output$table_5 <- renderPrint( 
+                PreF()
+        )
+        
+        output$table_6 <- renderPrint( 
+                MiMa()
+        )
+        
+        output$table_7 <- renderPrint( 
+                gauss
+        )
+        
+        output$table_8 <- renderPrint( 
+                PF()
+        )
+        
+        output$PROMETHEE_1_table <- DT::renderDataTable(PROMETHEE_1_data)
+        
+        output$araz <- renderPrint( PROMETHEE_1_data() )
+        
+        output$PRMETHEE_2_bar_plot <- renderPlot( ggplot(PROMETHEE_2_data(), aes(x=alternative, y=netflow) ) +geom_col(fill="green4")+ theme_classic() + scale_color_gradient() )
+        
+        })
